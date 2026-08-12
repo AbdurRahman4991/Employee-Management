@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyFirstApi.Data;
 using MyFirstApi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyFirstApi.Controllers
 {
@@ -17,12 +18,28 @@ namespace MyFirstApi.Controllers
         }
 
         // GET: api/employee
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetEmployees()
         {
-            var employees = await _context.Employees.ToListAsync();
+            try
+            {
+                var employees = await _context.Employees.ToListAsync();
 
-            return Ok(employees);
+                return Ok(new
+                {
+                    message = "Employees fetched successfully",
+                    data = employees
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "Something went wrong",
+                    error = ex.Message
+                });
+            }
         }
 
         // GET: api/employee/1

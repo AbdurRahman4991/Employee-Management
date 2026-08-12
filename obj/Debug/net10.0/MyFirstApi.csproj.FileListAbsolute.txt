@@ -156,3 +156,4 @@ E:\DotNetProjects\MyFirstApi\bin\Debug\net10.0\ru\Microsoft.CodeAnalysis.Workspa
 E:\DotNetProjects\MyFirstApi\bin\Debug\net10.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
 E:\DotNetProjects\MyFirstApi\bin\Debug\net10.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
 E:\DotNetProjects\MyFirstApi\bin\Debug\net10.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
+E:\DotNetProjects\MyFirstApi\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
