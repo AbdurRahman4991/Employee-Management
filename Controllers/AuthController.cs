@@ -1,10 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using MyFirstApi.Data;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using MyFirstApi.DTOs.Auth;
+using MyFirstApi.DTOs.Common;
+using MyFirstApi.Services.Interfaces;
 
 namespace MyFirstApi.Controllers
 {
@@ -12,79 +9,68 @@ namespace MyFirstApi.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        private readonly IConfiguration _configuration;
+        private readonly IAuthService _authService;
 
-        public AuthController(
-            AppDbContext context,
-            IConfiguration configuration)
+        public AuthController(IAuthService authService)
         {
-            _context = context;
-            _configuration = configuration;
+            _authService = authService;
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(
+            RegisterRequest request)
+        {
+            try
+            {
+                var user = await _authService.RegisterAsync(request);
+
+                return Ok(
+                    new ApiResponse<object>(
+                        true,
+                        "Registration successful",
+                        user
+                    )
+                );
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(
+                    new ApiResponse<object>(
+                        false,
+                        ex.Message
+                    )
+                );
+            }
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequest request)
+        public async Task<IActionResult> Login(
+            LoginRequest request)
         {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(x =>
-                    x.Username == request.Username &&
-                    x.Password == request.Password);
+            var token = await _authService.LoginAsync(request);
 
-            if (user == null)
+            if (token == null)
             {
-                return Unauthorized(new
-                {
-                    success = false,
-                    message = "Invalid username or password"
-                });
+                return Unauthorized(
+                    new ApiResponse<object>(
+                        false,
+                        "Invalid username or password"
+                    )
+                );
             }
 
-            var token = GenerateToken(user);
-
-            return Ok(new
+            var response = new LoginResponse
             {
-                success = true,
-                message = "Login successful",
-                token = token
-            });
-        }
-
-        private string GenerateToken(User user)
-        {
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Username)
+                Token = token
             };
 
-            var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(
-                    _configuration["Jwt:Key"]!
+            return Ok(
+                new ApiResponse<LoginResponse>(
+                    true,
+                    "Login successful",
+                    response
                 )
             );
-
-            var credentials = new SigningCredentials(
-                key,
-                SecurityAlgorithms.HmacSha256
-            );
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: credentials
-            );
-
-            return new JwtSecurityTokenHandler()
-                .WriteToken(token);
         }
-    }
-
-    public class LoginRequest
-    {
-        public string Username { get; set; } = "";
-        public string Password { get; set; } = "";
     }
 }
