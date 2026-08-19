@@ -76,6 +76,30 @@ namespace MyFirstApi.Services
             };
         }
 
+        public async Task<List<Employee>> GetEmployeesForPdfAsync(
+        string? search)
+        {
+            var query = _context.Employees
+                .AsNoTracking()
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.Trim();
+
+                query = query.Where(x =>
+                    x.Name.Contains(search) ||
+                    x.Email.Contains(search) ||
+                    x.Phone.Contains(search) ||
+                    x.Department.Contains(search)
+                );
+            }
+
+            return await query
+                .OrderBy(x => x.Id)
+                .ToListAsync();
+        }
+
 
         // GET BY ID
         public async Task<Employee?> GetEmployeeAsync(int id)

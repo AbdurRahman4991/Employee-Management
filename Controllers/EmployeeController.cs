@@ -12,10 +12,13 @@ namespace MyFirstApi.Controllers
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeService _employeeService;
+        private readonly IPdfService _pdfService;
 
-        public EmployeeController(IEmployeeService employeeService)
+        public EmployeeController(IEmployeeService employeeService, 
+        IPdfService pdfService)
         {
             _employeeService = employeeService;
+            _pdfService = pdfService;
         }
 
         // =========================================
@@ -41,6 +44,23 @@ namespace MyFirstApi.Controllers
                     "Employees fetched successfully",
                     result
                 )
+            );
+        }
+
+        [HttpGet("pdf")]
+        public async Task<IActionResult> GenerateEmployeePdf(
+            [FromQuery] string? search)
+        {
+            var employees =
+                await _employeeService.GetEmployeesForPdfAsync(search);
+
+            var pdf =
+                _pdfService.GenerateEmployeePdf(employees);
+
+            return File(
+                pdf,
+                "application/pdf",
+                "employees.pdf"
             );
         }
 

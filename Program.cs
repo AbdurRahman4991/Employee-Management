@@ -7,6 +7,7 @@ using MyFirstApi.Services;
 using MyFirstApi.Services.Interfaces;
 using MyFirstApi.Commands;
 using MyFirstApi.Data.Seeders;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Services
 // ========================================
 
+// QuestPDF License
+QuestPDF.Settings.License = LicenseType.Evaluation;
 builder.Services.AddControllers();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -21,6 +24,7 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 builder.Services.AddScoped<EmployeeSeeder>();
 builder.Services.AddScoped<SeedEmployeesCommand>();
+builder.Services.AddScoped<IPdfService, PdfService>();
 
 
 // ========================================

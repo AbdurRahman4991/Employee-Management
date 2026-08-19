@@ -10,7 +10,7 @@ namespace MyFirstApi.Services.Interfaces
             string? search,
             int page = 1,
             int pageSize = 10);
-
+        Task<List<Employee>> GetEmployeesForPdfAsync(string? search);
         Task<Employee?> GetEmployeeAsync(int id);
 
         Task<Employee> CreateEmployeeAsync(
