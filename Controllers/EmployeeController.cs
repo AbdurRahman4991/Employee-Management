@@ -1,8 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MyFirstApi.Data;
-using MyFirstApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using MyFirstApi.DTOs.Common;
+using MyFirstApi.Models;
+using MyFirstApi.Services.Interfaces;
+using MyFirstApi.DTOs.Employee;
 
 namespace MyFirstApi.Controllers
 {
@@ -10,121 +11,152 @@ namespace MyFirstApi.Controllers
     [Route("api/[controller]")]
     public class EmployeeController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IEmployeeService _employeeService;
 
-        public EmployeeController(AppDbContext context)
+        public EmployeeController(IEmployeeService employeeService)
         {
-            _context = context;
+            _employeeService = employeeService;
         }
 
+        // =========================================
         // GET: api/employee
+        // =========================================
+
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> GetEmployees()
+        public async Task<IActionResult> GetEmployees(
+            string? search,
+            int page = 1,
+            int pageSize = 10)
         {
-            try
-            {
-                var employees = await _context.Employees.ToListAsync();
+            var result = await _employeeService.GetEmployeesAsync(
+                search,
+                page,
+                pageSize
+            );
 
-                return Ok(new
-                {
-                    message = "Employees fetched successfully",
-                    data = employees
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new
-                {
-                    message = "Something went wrong",
-                    error = ex.Message
-                });
-            }
-        }
-
-        // GET: api/employee/1
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetEmployee(int id)
-        {
-            var employee = await _context.Employees
-                .FirstOrDefaultAsync(x => x.Id == id);
-
-            if (employee == null)
-            {
-                return NotFound(new
-                {
-                    message = "Employee not found"
-                });
-            }
-
-            return Ok(employee);
-        }
-
-        // POST: api/employee
-        [HttpPost]
-        public async Task<IActionResult> CreateEmployee(Employee employee)
-        {
-            _context.Employees.Add(employee);
-
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(
-                nameof(GetEmployee),
-                new { id = employee.Id },
-                employee
+            return Ok(
+                new ApiResponse<PagedResponse<Employee>>(
+                    true,
+                    "Employees fetched successfully",
+                    result
+                )
             );
         }
 
-        // PUT: api/employee/1
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEmployee(
-            int id,
-            Employee employee)
+
+        // =========================================
+        // GET: api/employee/1
+        // =========================================
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetEmployee(int id)
         {
-            var existingEmployee = await _context.Employees
-                .FirstOrDefaultAsync(x => x.Id == id);
-
-            if (existingEmployee == null)
-            {
-                return NotFound(new
-                {
-                    message = "Employee not found"
-                });
-            }
-
-            existingEmployee.Name = employee.Name;
-            existingEmployee.Email = employee.Email;
-            existingEmployee.Phone = employee.Phone;
-            existingEmployee.Department = employee.Department;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(existingEmployee);
-        }
-
-        // DELETE: api/employee/1
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEmployee(int id)
-        {
-            var employee = await _context.Employees
-                .FirstOrDefaultAsync(x => x.Id == id);
+            var employee = await _employeeService.GetEmployeeAsync(id);
 
             if (employee == null)
             {
-                return NotFound(new
-                {
-                    message = "Employee not found"
-                });
+                return NotFound(
+                    new ApiResponse<object>(
+                        false,
+                        "Employee not found"
+                    )
+                );
             }
 
-            _context.Employees.Remove(employee);
+            return Ok(
+                new ApiResponse<Employee>(
+                    true,
+                    "Employee fetched successfully",
+                    employee
+                )
+            );
+        }
 
-            await _context.SaveChangesAsync();
 
-            return Ok(new
+        // =========================================
+        // POST: api/employee
+        // =========================================
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> CreateEmployee(
+            CreateEmployeeRequest request)
+        {
+            var employee =
+                await _employeeService.CreateEmployeeAsync(request);
+
+            return Ok(
+                new ApiResponse<Employee>(
+                    true,
+                    "Employee created successfully",
+                    employee
+                )
+            );
+        }
+
+
+        // =========================================
+        // PUT: api/employee/1
+        // =========================================
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateEmployee(
+            int id,
+            UpdateEmployeeRequest request)
+        {
+            var employee =
+                await _employeeService.UpdateEmployeeAsync(
+                    id,
+                    request
+                );
+
+            if (employee == null)
             {
-                message = "Employee deleted successfully"
-            });
+                return NotFound(
+                    new ApiResponse<object>(
+                        false,
+                        "Employee not found"
+                    )
+                );
+            }
+
+            return Ok(
+                new ApiResponse<Employee>(
+                    true,
+                    "Employee updated successfully",
+                    employee
+                )
+            );
+        }
+
+
+        // =========================================
+        // DELETE: api/employee/1
+        // =========================================
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteEmployee(int id)
+        {
+            var deleted =
+                await _employeeService.DeleteEmployeeAsync(id);
+
+            if (!deleted)
+            {
+                return NotFound(
+                    new ApiResponse<object>(
+                        false,
+                        "Employee not found"
+                    )
+                );
+            }
+
+            return Ok(
+                new ApiResponse<object>(
+                    true,
+                    "Employee deleted successfully"
+                )
+            );
         }
     }
 }
