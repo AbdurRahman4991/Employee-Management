@@ -17,15 +17,18 @@ namespace MyFirstApi.Services
         private readonly IConfiguration _configuration;
         private readonly PasswordHasher<User> _passwordHasher;
         private readonly IEmailService _emailService;
+        private readonly IEmailQueueService _emailQueue;
 
         public AuthService(
             AppDbContext context,
             IConfiguration configuration,
-            IEmailService emailService)
+            IEmailService emailService,
+            IEmailQueueService emailQueue)
         {
             _context = context;
             _configuration = configuration;
             _emailService = emailService;
+            _emailQueue = emailQueue;
             _passwordHasher = new PasswordHasher<User>();
         }
 
@@ -161,16 +164,20 @@ namespace MyFirstApi.Services
             var subject = "Password Reset OTP";
 
             var body = $"""
-                <h2>Password Reset</h2>
+                <html>
+                <body>
+                    <h2>Password Reset</h2>
 
-                <p>Your OTP is:</p>
+                    <p>Your OTP is:</p>
 
-                <h1>{otp}</h1>
+                    <h1>{otp}</h1>
 
-                <p>This OTP will expire in 5 minutes.</p>
+                    <p>This OTP will expire in 5 minutes.</p>
+                </body>
+                </html>
                 """;
 
-            await _emailService.SendEmailAsync(
+            await _emailQueue.QueueEmailAsync(
                 user.Email!,
                 subject,
                 body

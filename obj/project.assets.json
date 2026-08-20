@@ -928,6 +928,35 @@
           }
         }
       },
+      "RESPite/3.1.13": {
+        "type": "package",
+        "compile": {
+          "lib/net10.0/RESPite.dll": {}
+        },
+        "runtime": {
+          "lib/net10.0/RESPite.dll": {}
+        }
+      },
+      "StackExchange.Redis/3.1.13": {
+        "type": "package",
+        "dependencies": {
+          "RESPite": "3.1.13",
+          "System.IO.Hashing": "10.0.5"
+        },
+        "compile": {
+          "lib/net10.0/StackExchange.Redis.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/StackExchange.Redis.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "build/StackExchange.Redis.props": {}
+        }
+      },
       "System.ClientModel/1.5.1": {
         "type": "package",
         "dependencies": {
@@ -1104,6 +1133,22 @@
           "lib/net10.0/System.IdentityModel.Tokens.Jwt.dll": {
             "related": ".xml"
           }
+        }
+      },
+      "System.IO.Hashing/10.0.5": {
+        "type": "package",
+        "compile": {
+          "lib/net10.0/System.IO.Hashing.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/System.IO.Hashing.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
         }
       },
       "System.Memory.Data/8.0.1": {
@@ -2980,6 +3025,52 @@
         "runtimes/win-x86/native/qpdf.dll"
       ]
     },
+    "RESPite/3.1.13": {
+      "sha512": "wqViG+Dl4Ln/X33IyfmciyGirm1ET+M7kjwbb+oJAbDXLP2u2hX1eOnaEgyIAerJNSP98BytyddcW3ZQH55wgw==",
+      "type": "package",
+      "path": "respite/3.1.13",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net10.0/RESPite.dll",
+        "lib/net461/RESPite.dll",
+        "lib/net472/RESPite.dll",
+        "lib/net6.0/RESPite.dll",
+        "lib/net8.0/RESPite.dll",
+        "lib/netstandard2.0/RESPite.dll",
+        "readme.md",
+        "respite.3.1.13.nupkg.sha512",
+        "respite.nuspec",
+        "seredis.png"
+      ]
+    },
+    "StackExchange.Redis/3.1.13": {
+      "sha512": "OvhFdV2ucee2hnN2v2EOcOTMvIzGsq1PX4kAbIYC8cax+MyabSa7Eu3hWY6D//SbxzZQ/eYFvD8Tvg+pK+969g==",
+      "type": "package",
+      "path": "stackexchange.redis/3.1.13",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "analyzers/dotnet/cs/StackExchange.Redis.Build.dll",
+        "build/StackExchange.Redis.props",
+        "lib/net10.0/StackExchange.Redis.dll",
+        "lib/net10.0/StackExchange.Redis.xml",
+        "lib/net461/StackExchange.Redis.dll",
+        "lib/net461/StackExchange.Redis.xml",
+        "lib/net472/StackExchange.Redis.dll",
+        "lib/net472/StackExchange.Redis.xml",
+        "lib/net6.0/StackExchange.Redis.dll",
+        "lib/net6.0/StackExchange.Redis.xml",
+        "lib/net8.0/StackExchange.Redis.dll",
+        "lib/net8.0/StackExchange.Redis.xml",
+        "lib/netstandard2.0/StackExchange.Redis.dll",
+        "lib/netstandard2.0/StackExchange.Redis.xml",
+        "seredis.png",
+        "stackexchange.redis.3.1.13.nupkg.sha512",
+        "stackexchange.redis.nuspec"
+      ]
+    },
     "System.ClientModel/1.5.1": {
       "sha512": "k2jKSO0X45IqhVOT9iQB4xralNN9foRQsRvXBTyRpAVxyzCJlG895T9qYrQWbcJ6OQXxOouJQ37x5nZH5XKK+A==",
       "type": "package",
@@ -3239,6 +3330,35 @@
         "system.identitymodel.tokens.jwt.nuspec"
       ]
     },
+    "System.IO.Hashing/10.0.5": {
+      "sha512": "8IBJWcCT9+e4Bmevm4T7+fQEiAh133KGiz4oiVTgJckd3Q76OFdR1falgn9lpz7+C4HJvogCDJeAa2QmvbeVtg==",
+      "type": "package",
+      "path": "system.io.hashing/10.0.5",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/System.IO.Hashing.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/System.IO.Hashing.targets",
+        "lib/net10.0/System.IO.Hashing.dll",
+        "lib/net10.0/System.IO.Hashing.xml",
+        "lib/net462/System.IO.Hashing.dll",
+        "lib/net462/System.IO.Hashing.xml",
+        "lib/net8.0/System.IO.Hashing.dll",
+        "lib/net8.0/System.IO.Hashing.xml",
+        "lib/net9.0/System.IO.Hashing.dll",
+        "lib/net9.0/System.IO.Hashing.xml",
+        "lib/netstandard2.0/System.IO.Hashing.dll",
+        "lib/netstandard2.0/System.IO.Hashing.xml",
+        "system.io.hashing.10.0.5.nupkg.sha512",
+        "system.io.hashing.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "System.Memory.Data/8.0.1": {
       "sha512": "BVYuec3jV23EMRDeR7Dr1/qhx7369dZzJ9IWy2xylvb4YfXsrUxspWc4UWYid/tj4zZK58uGZqn2WQiaDMhmAg==",
       "type": "package",
@@ -3343,7 +3463,8 @@
       "Microsoft.AspNetCore.OpenApi >= 10.0.10",
       "Microsoft.EntityFrameworkCore.Design >= 10.0.10",
       "Microsoft.EntityFrameworkCore.SqlServer >= 10.0.10",
-      "QuestPDF >= 2026.7.3"
+      "QuestPDF >= 2026.7.3",
+      "StackExchange.Redis >= 3.1.13"
     ]
   },
   "packageFolders": {
@@ -3412,6 +3533,10 @@
           "QuestPDF": {
             "target": "Package",
             "version": "[2026.7.3, )"
+          },
+          "StackExchange.Redis": {
+            "target": "Package",
+            "version": "[3.1.13, )"
           }
         },
         "imports": [
