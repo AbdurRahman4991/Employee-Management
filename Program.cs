@@ -8,6 +8,7 @@ using MyFirstApi.Services.Interfaces;
 using MyFirstApi.Commands;
 using MyFirstApi.Data.Seeders;
 using QuestPDF.Infrastructure;
+using MyFirstApi.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,7 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<EmployeeSeeder>();
 builder.Services.AddScoped<SeedEmployeesCommand>();
 builder.Services.AddScoped<IPdfService, PdfService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 
 // ========================================

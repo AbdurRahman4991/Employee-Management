@@ -16,13 +16,16 @@ namespace MyFirstApi.Services
         private readonly AppDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly PasswordHasher<User> _passwordHasher;
+        private readonly IEmailService _emailService;
 
         public AuthService(
             AppDbContext context,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IEmailService emailService)
         {
             _context = context;
             _configuration = configuration;
+            _emailService = emailService;
             _passwordHasher = new PasswordHasher<User>();
         }
 
@@ -43,8 +46,10 @@ namespace MyFirstApi.Services
 
             var user = new User
             {
-                Username = request.Username
+                Username = request.Username,
+                Email = request.Email
             };
+
 
             // Hash password
             user.Password = _passwordHasher.HashPassword(
@@ -136,5 +141,50 @@ namespace MyFirstApi.Services
             return new JwtSecurityTokenHandler()
                 .WriteToken(token);
         }
+
+        // Forget Password
+
+        public async Task<bool> ForgotPasswordAsync(
+        ForgotPasswordRequest request)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(x =>
+                    x.Email == request.Email);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            var otp = GenerateOtp();
+
+            var subject = "Password Reset OTP";
+
+            var body = $"""
+                <h2>Password Reset</h2>
+
+                <p>Your OTP is:</p>
+
+                <h1>{otp}</h1>
+
+                <p>This OTP will expire in 5 minutes.</p>
+                """;
+
+            await _emailService.SendEmailAsync(
+                user.Email!,
+                subject,
+                body
+            );
+
+            return true;
+        }
+
+        private string GenerateOtp()
+        {
+            return Random.Shared
+                .Next(100000, 1000000)
+                .ToString();
+        }
+        
     }
 }

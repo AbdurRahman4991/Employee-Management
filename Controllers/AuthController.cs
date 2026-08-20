@@ -72,5 +72,31 @@ namespace MyFirstApi.Controllers
                 )
             );
         }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(
+            [FromBody] ForgotPasswordRequest request)
+        {
+            var result =
+                await _authService.ForgotPasswordAsync(request);
+
+            if (!result)
+            {
+                return NotFound(
+                    new ApiResponse<object>(
+                        false,
+                        "Email not found"
+                    )
+                );
+            }
+
+            return Ok(
+                new ApiResponse<object>(
+                    true,
+                    "OTP sent successfully"
+                )
+            );
+        }
+
     }
 }
