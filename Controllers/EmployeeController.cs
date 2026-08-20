@@ -4,6 +4,7 @@ using MyFirstApi.DTOs.Common;
 using MyFirstApi.Models;
 using MyFirstApi.Services.Interfaces;
 using MyFirstApi.DTOs.Employee;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace MyFirstApi.Controllers
 {
@@ -27,6 +28,7 @@ namespace MyFirstApi.Controllers
 
         [Authorize]
         [HttpGet]
+        [EnableRateLimiting("api")]
         public async Task<IActionResult> GetEmployees(
             string? search,
             int page = 1,
@@ -48,6 +50,7 @@ namespace MyFirstApi.Controllers
         }
 
         [HttpGet("pdf")]
+        [EnableRateLimiting("api")]
         public async Task<IActionResult> GenerateEmployeePdf(
             [FromQuery] string? search)
         {
@@ -70,6 +73,7 @@ namespace MyFirstApi.Controllers
         // =========================================
         [Authorize]
         [HttpGet("{id}")]
+        [EnableRateLimiting("api")]
         public async Task<IActionResult> GetEmployee(int id)
         {
             var employee = await _employeeService.GetEmployeeAsync(id);
@@ -100,6 +104,7 @@ namespace MyFirstApi.Controllers
 
         [Authorize]
         [HttpPost]
+        [EnableRateLimiting("api")]
         public async Task<IActionResult> CreateEmployee(
             CreateEmployeeRequest request)
         {
@@ -121,6 +126,7 @@ namespace MyFirstApi.Controllers
         // =========================================
         [Authorize]
         [HttpPut("{id}")]
+        [EnableRateLimiting("api")]
         public async Task<IActionResult> UpdateEmployee(
             int id,
             UpdateEmployeeRequest request)
@@ -156,6 +162,7 @@ namespace MyFirstApi.Controllers
         // =========================================
         [Authorize]
         [HttpDelete("{id}")]
+        [EnableRateLimiting("api")]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
             var deleted =

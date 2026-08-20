@@ -9,6 +9,8 @@ using MyFirstApi.Commands;
 using MyFirstApi.Data.Seeders;
 using QuestPDF.Infrastructure;
 using MyFirstApi.Services.Background;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +22,22 @@ var builder = WebApplication.CreateBuilder(args);
 // QuestPDF License
 QuestPDF.Settings.License = LicenseType.Evaluation;
 builder.Services.AddControllers();
+
+// Rate limitter
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("api", limiterOptions =>
+    {
+        limiterOptions.PermitLimit = 10;
+
+        limiterOptions.Window = TimeSpan.FromMinutes(1);
+
+        limiterOptions.QueueLimit = 0;
+    });
+
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
@@ -163,7 +181,7 @@ var app = builder.Build();
 // ========================================
 // Middleware
 // ========================================
-
+app.UseRateLimiter();
 app.UseAuthentication();
 
 app.UseAuthorization();

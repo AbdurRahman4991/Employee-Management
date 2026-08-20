@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyFirstApi.DTOs.Auth;
 using MyFirstApi.DTOs.Common;
 using MyFirstApi.Services.Interfaces;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace MyFirstApi.Controllers
 {
@@ -17,6 +18,7 @@ namespace MyFirstApi.Controllers
         }
 
         [HttpPost("register")]
+        [EnableRateLimiting("api")]
         public async Task<IActionResult> Register(
             RegisterRequest request)
         {
@@ -44,6 +46,7 @@ namespace MyFirstApi.Controllers
         }
 
         [HttpPost("login")]
+        [EnableRateLimiting("api")]
         public async Task<IActionResult> Login(
             LoginRequest request)
         {
@@ -74,6 +77,7 @@ namespace MyFirstApi.Controllers
         }
 
         [HttpPost("forgot-password")]
+        [EnableRateLimiting("api")]
         public async Task<IActionResult> ForgotPassword(
             [FromBody] ForgotPasswordRequest request)
         {
