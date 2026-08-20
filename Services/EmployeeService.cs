@@ -62,6 +62,7 @@ namespace MyFirstApi.Services
                 .OrderBy(x => x.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
+                .AsNoTracking()
                 .ToListAsync();
 
             return new PagedResponse<Employee>
