@@ -1,6 +1,6 @@
-namespace MyFirstApi.Models
+namespace MyFirstApi.DTOs.Employee
 {
-    public class Employee
+    public class EmployeeResponse
     {
         public int Id { get; set; }
 
@@ -10,10 +10,6 @@ namespace MyFirstApi.Models
 
         public string Phone { get; set; } = string.Empty;
 
-        // Foreign Key
-        public int DepartmentId { get; set; }
-
-        // Navigation Property
-        public Department Department { get; set; } = null!;
+        public DepartmentResponse Department { get; set; } = null!;
     }
 }

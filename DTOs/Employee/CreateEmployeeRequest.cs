@@ -17,6 +17,6 @@ namespace MyFirstApi.DTOs.Employee
         public string Phone { get; set; } = "";
 
         [Required(ErrorMessage = "Department is required")]
-        public string Department { get; set; } = "";
+        public int DepartmentId { get; set; }
     }
 }

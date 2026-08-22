@@ -8,6 +8,8 @@ using MyFirstApi.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.SignalR;
+using MyFirstApi.Hubs;
 
 namespace MyFirstApi.Services
 {
@@ -17,19 +19,22 @@ namespace MyFirstApi.Services
         private readonly IConfiguration _configuration;
         private readonly PasswordHasher<User> _passwordHasher;
         private readonly IEmailService _emailService;
-        private readonly IEmailQueueService _emailQueue;
+        private readonly IEmailQueueService _emailQueue;        
+        private readonly IHubContext<NotificationHub> _hub;
 
         public AuthService(
             AppDbContext context,
             IConfiguration configuration,
             IEmailService emailService,
-            IEmailQueueService emailQueue)
+            IEmailQueueService emailQueue,
+            IHubContext<NotificationHub> hub)
         {
             _context = context;
             _configuration = configuration;
             _emailService = emailService;
             _emailQueue = emailQueue;
             _passwordHasher = new PasswordHasher<User>();
+            _hub = hub;
         }
 
         // =========================
@@ -63,6 +68,17 @@ namespace MyFirstApi.Services
             _context.Users.Add(user);
 
             await _context.SaveChangesAsync();
+
+             // Realtime notification
+            await _hub.Clients.All.SendAsync(
+                "ReceiveNotification",
+                new
+                {
+                    Message = $"New user registered: {user.Username}",
+                    UserId = user.Id,
+                    Username = user.Username
+                }
+            );
 
             return new
             {

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using MyFirstApi.Models;
 
 namespace MyFirstApi.Data.Seeders
@@ -41,15 +42,21 @@ namespace MyFirstApi.Data.Seeders
                 "Chowdhury"
             };
 
-            string[] departments =
+
+            // Get Departments from database
+            var departments = await _context.Departments
+                .AsNoTracking()
+                .ToListAsync();
+
+
+            // Check Department exists
+            if (departments.Count == 0)
             {
-                "IT",
-                "HR",
-                "Finance",
-                "Marketing",
-                "Sales",
-                "Operations"
-            };
+                throw new Exception(
+                    "No departments found. Please insert departments first."
+                );
+            }
+
 
             for (int batch = 0; batch < count; batch += batchSize)
             {
@@ -59,19 +66,26 @@ namespace MyFirstApi.Data.Seeders
                 var employees =
                     new List<Employee>(currentBatchSize);
 
+
                 for (int i = 1; i <= currentBatchSize; i++)
                 {
                     int number = batch + i;
 
                     string firstName =
-                        firstNames[random.Next(firstNames.Length)];
+                        firstNames[
+                            random.Next(firstNames.Length)
+                        ];
 
                     string lastName =
-                        lastNames[random.Next(lastNames.Length)];
+                        lastNames[
+                            random.Next(lastNames.Length)
+                        ];
+
 
                     employees.Add(new Employee
                     {
-                        Name = $"{firstName} {lastName} {number}",
+                        Name =
+                            $"{firstName} {lastName} {number}",
 
                         Email =
                             $"{firstName.ToLower()}.{lastName.ToLower()}{number}@example.com",
@@ -79,16 +93,23 @@ namespace MyFirstApi.Data.Seeders
                         Phone =
                             $"017{random.Next(10000000, 99999999)}",
 
-                        Department =
-                            departments[random.Next(departments.Length)]
+                        // Foreign Key
+                        DepartmentId =
+                            departments[
+                                random.Next(departments.Count)
+                            ].Id
                     });
                 }
 
-                await _context.Employees.AddRangeAsync(employees);
+
+                await _context.Employees
+                    .AddRangeAsync(employees);
 
                 await _context.SaveChangesAsync();
 
+                // Clear tracking memory
                 _context.ChangeTracker.Clear();
+
 
                 Console.WriteLine(
                     $"{Math.Min(batch + batchSize, count)} / {count}"

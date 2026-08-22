@@ -12,6 +12,7 @@ namespace MyFirstApi.Data
 
         public DbSet<Employee> Employees { get; set; }
         public DbSet<User> Users {get; set;}
+        public DbSet<Department> Departments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -22,7 +23,10 @@ namespace MyFirstApi.Data
                 .IsUnique();
 
             modelBuilder.Entity<Employee>()
-                .HasIndex(x => x.Department);
+                .HasOne(e => e.Department)
+                .WithMany(d => d.Employees)
+                .HasForeignKey(e => e.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

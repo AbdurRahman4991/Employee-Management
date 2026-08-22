@@ -41,7 +41,7 @@ namespace MyFirstApi.Controllers
             );
 
             return Ok(
-                new ApiResponse<PagedResponse<Employee>>(
+                new ApiResponse<PagedResponse<EmployeeResponse>>(
                     true,
                     "Employees fetched successfully",
                     result

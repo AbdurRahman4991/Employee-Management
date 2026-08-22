@@ -6,10 +6,10 @@ namespace MyFirstApi.Services.Interfaces
 {
     public interface IEmployeeService
     {
-        Task<PagedResponse<Employee>> GetEmployeesAsync(
-            string? search,
-            int page = 1,
-            int pageSize = 10);
+        Task<PagedResponse<EmployeeResponse>> GetEmployeesAsync(
+        string? search,
+        int page = 1,
+        int pageSize = 10);
         Task<List<Employee>> GetEmployeesForPdfAsync(string? search);
         Task<Employee?> GetEmployeeAsync(int id);
 

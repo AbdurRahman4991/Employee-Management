@@ -16,16 +16,23 @@ namespace MyFirstApi.Services
             _context = context;
         }
 
-        public async Task<PagedResponse<Employee>> GetEmployeesAsync(
-        string? search,
-        int page = 1,
-        int pageSize = 10)
+
+        // =========================
+        // GET EMPLOYEES
+        // Search + Pagination
+        // =========================
+        public async Task<PagedResponse<EmployeeResponse>> GetEmployeesAsync(
+            string? search,
+            int page = 1,
+            int pageSize = 10)
         {
+            // Page validation
             if (page < 1)
             {
                 page = 1;
             }
 
+            // Page size validation
             if (pageSize < 1)
             {
                 pageSize = 10;
@@ -33,9 +40,13 @@ namespace MyFirstApi.Services
 
             var query = _context.Employees
                 .AsNoTracking()
+                .Include(x => x.Department)
                 .AsQueryable();
 
-            // Search
+
+            // =========================
+            // SEARCH
+            // =========================
             if (!string.IsNullOrWhiteSpace(search))
             {
                 search = search.Trim();
@@ -44,28 +55,50 @@ namespace MyFirstApi.Services
                     x.Name.Contains(search) ||
                     x.Email.Contains(search) ||
                     x.Phone.Contains(search) ||
-                    x.Department.Contains(search)
+                    x.Department.Name.Contains(search)
                 );
             }
 
-            // Total records
+
+            // =========================
+            // TOTAL RECORDS
+            // =========================
             var totalRecords = await query.CountAsync();
 
-            // Total pages
+
+            // =========================
+            // TOTAL PAGES
+            // =========================
             var totalPages =
                 (int)Math.Ceiling(
                     totalRecords / (double)pageSize
                 );
 
-            // Pagination
-            var employees = await query
-                .OrderBy(x => x.Id)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .AsNoTracking()
-                .ToListAsync();
 
-            return new PagedResponse<Employee>
+            // =========================
+            // PAGINATION
+            // =========================
+            var employees = await query
+            .OrderBy(x => x.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(x => new EmployeeResponse
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Email = x.Email,
+                Phone = x.Phone,
+
+                Department = new DepartmentResponse
+                {
+                    Id = x.Department.Id,
+                    Name = x.Department.Name
+                }
+            })
+            .ToListAsync();
+
+
+            return new PagedResponse<EmployeeResponse>
             {
                 Items = employees,
                 Page = page,
@@ -77,13 +110,20 @@ namespace MyFirstApi.Services
             };
         }
 
+
+        // =========================
+        // GET EMPLOYEES FOR PDF
+        // =========================
         public async Task<List<Employee>> GetEmployeesForPdfAsync(
-        string? search)
+            string? search)
         {
             var query = _context.Employees
                 .AsNoTracking()
+                .Include(x => x.Department)
                 .AsQueryable();
 
+
+            // Search
             if (!string.IsNullOrWhiteSpace(search))
             {
                 search = search.Trim();
@@ -92,9 +132,10 @@ namespace MyFirstApi.Services
                     x.Name.Contains(search) ||
                     x.Email.Contains(search) ||
                     x.Phone.Contains(search) ||
-                    x.Department.Contains(search)
+                    x.Department.Name.Contains(search)
                 );
             }
+
 
             return await query
                 .OrderBy(x => x.Id)
@@ -102,15 +143,21 @@ namespace MyFirstApi.Services
         }
 
 
+        // =========================
         // GET BY ID
+        // =========================
         public async Task<Employee?> GetEmployeeAsync(int id)
         {
             return await _context.Employees
+                .AsNoTracking()
+                .Include(x => x.Department)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
 
+        // =========================
         // CREATE
+        // =========================
         public async Task<Employee> CreateEmployeeAsync(
             CreateEmployeeRequest request)
         {
@@ -119,7 +166,9 @@ namespace MyFirstApi.Services
                 Name = request.Name,
                 Email = request.Email,
                 Phone = request.Phone,
-                Department = request.Department
+
+                // Foreign Key
+                DepartmentId = request.DepartmentId
             };
 
             _context.Employees.Add(employee);
@@ -130,7 +179,9 @@ namespace MyFirstApi.Services
         }
 
 
+        // =========================
         // UPDATE
+        // =========================
         public async Task<Employee?> UpdateEmployeeAsync(
             int id,
             UpdateEmployeeRequest request)
@@ -143,10 +194,14 @@ namespace MyFirstApi.Services
                 return null;
             }
 
+
             employee.Name = request.Name;
             employee.Email = request.Email;
             employee.Phone = request.Phone;
-            employee.Department = request.Department;
+
+            // Foreign Key
+            employee.DepartmentId = request.DepartmentId;
+
 
             await _context.SaveChangesAsync();
 
@@ -154,7 +209,9 @@ namespace MyFirstApi.Services
         }
 
 
+        // =========================
         // DELETE
+        // =========================
         public async Task<bool> DeleteEmployeeAsync(int id)
         {
             var employee = await _context.Employees

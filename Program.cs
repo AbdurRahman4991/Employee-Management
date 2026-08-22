@@ -11,6 +11,8 @@ using QuestPDF.Infrastructure;
 using MyFirstApi.Services.Background;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
+using MyFirstApi.Hubs;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +24,8 @@ var builder = WebApplication.CreateBuilder(args);
 // QuestPDF License
 QuestPDF.Settings.License = LicenseType.Evaluation;
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
+
 
 // Rate limitter
 
@@ -185,6 +189,7 @@ app.UseRateLimiter();
 app.UseAuthentication();
 
 app.UseAuthorization();
+app.MapHub<NotificationHub>("/notificationHub");
 
 
 // ========================================
