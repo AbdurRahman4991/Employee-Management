@@ -70,15 +70,23 @@ namespace MyFirstApi.Services
             await _context.SaveChangesAsync();
 
              // Realtime notification
-            await _hub.Clients.All.SendAsync(
-                "ReceiveNotification",
-                new
-                {
-                    Message = $"New user registered: {user.Username}",
-                    UserId = user.Id,
-                    Username = user.Username
-                }
-            );
+        await _context.SaveChangesAsync();
+
+        await _hub.Clients.All.SendAsync(
+            "ReceiveNotification",
+            new
+            {
+                Message = $"New user registered: {user.Username}",
+                UserId = user.Id,
+                Username = user.Username
+            }
+        );
+
+        return new
+        {
+            Id = user.Id,
+            Username = user.Username
+        };
 
             return new
             {

@@ -197,3 +197,5 @@ E:\DotNetProjects\MyFirstApi\obj\Debug\net10.0\refint\MyFirstApi.dll
 E:\DotNetProjects\MyFirstApi\obj\Debug\net10.0\MyFirstApi.pdb
 E:\DotNetProjects\MyFirstApi\obj\Debug\net10.0\MyFirstApi.genruntimeconfig.cache
 E:\DotNetProjects\MyFirstApi\obj\Debug\net10.0\ref\MyFirstApi.dll
+E:\DotNetProjects\MyFirstApi\bin\Debug\net10.0\MyFirstApi.staticwebassets.runtime.json
+E:\DotNetProjects\MyFirstApi\obj\Debug\net10.0\compressed\us6x25n12n-{0}-7caklvlz0p-7caklvlz0p.gz

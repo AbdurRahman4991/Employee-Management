@@ -190,6 +190,7 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 app.MapHub<NotificationHub>("/notificationHub");
+app.UseStaticFiles();
 
 
 // ========================================

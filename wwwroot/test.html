@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SignalR Test</title>
+</head>
+<body>
+
+<h1>Realtime Notification</h1>
+
+<div id="status">Connecting...</div>
+<div id="notifications"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@8.0.7/dist/browser/signalr.min.js"></script>
+
+<script>
+
+const connection = new signalR.HubConnectionBuilder()
+    .withUrl("/notificationHub")
+    .withAutomaticReconnect()
+    .build();
+
+connection.on("ReceiveNotification", function (data) {
+
+    console.log("RECEIVED DATA:", data);
+
+    document.getElementById("notifications").innerHTML += `
+        <p>
+            🔔 ${data.message}
+            <br>
+            User ID: ${data.userId}
+            <br>
+            Username: ${data.username}
+        </p>
+    `;
+});
+
+connection.start()
+    .then(() => {
+        console.log("SignalR Connected!");
+        document.getElementById("status").innerText =
+            "🟢 SignalR Connected";
+    })
+    .catch(err => {
+        console.error(err);
+        document.getElementById("status").innerText =
+            "🔴 Connection Failed";
+    });
+
+</script>
+
+</body>
+</html>
