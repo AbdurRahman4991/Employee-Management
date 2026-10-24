@@ -13,8 +13,6 @@ using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 using MyFirstApi.Hubs;
 
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 // ========================================

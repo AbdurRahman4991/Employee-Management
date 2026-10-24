@@ -29,4 +29,14 @@ namespace MyFirstApi.Data
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }
+
+
+//     protected override void OnModelCreating(ModelBuilder modelBuilder)
+// {
+//     modelBuilder.Entity<OrganizationUnit>()
+//         .HasOne(x => x.Parent)
+//         .WithMany(x => x.Children)
+//         .HasForeignKey(x => x.ParentId)
+//         .OnDelete(DeleteBehavior.Restrict);
+// }
 }

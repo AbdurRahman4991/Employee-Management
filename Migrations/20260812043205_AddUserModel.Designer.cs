@@ -17,14 +17,14 @@ namespace MyFirstApi.Migrations
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
-#pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.10")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+            #pragma warning disable 612, 618
+                modelBuilder
+                    .HasAnnotation("ProductVersion", "10.0.10")
+                    .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+                SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("MyFirstApi.Models.Employee", b =>
+                modelBuilder.Entity("MyFirstApi.Models.Employee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -58,7 +58,7 @@ namespace MyFirstApi.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("MyFirstApi.Models.User", b =>
+                modelBuilder.Entity("MyFirstApi.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -78,7 +78,7 @@ namespace MyFirstApi.Migrations
 
                     b.ToTable("Users");
                 });
-#pragma warning restore 612, 618
+            #pragma warning restore 612, 618
         }
     }
 }
